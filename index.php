@@ -22,67 +22,74 @@ Flight::route('/', function() {
     if (!$page)
         $page = 1;
 
-    if ($_GET['q']) {
-        $res = cache("search-" . $_GET['q'], function() use($client) {
-            try {
-                $hash = $_GET['q'];
+    try {
 
-                if (preg_match("#^[0-9]+$#ims", $hash)) {//is index
-                    $result = $client->execute('height', array($hash));
+        if ($_GET['q']) {
+            $res = cache("search-" . $_GET['q'], function() use($client) {
+                try {
+                    $hash = $_GET['q'];
+
+                    if (preg_match("#^[0-9]+$#ims", $hash)) {//is index
+                        $result = $client->execute('height', array($hash));
+                        if ($result[0]['hash'])
+                            return ("/block/{$result[0]['hash']}");
+                    }
+
+                    if (!preg_match("/^([0-9a-z]{1,150})$/ims", $hash))
+                        return false;
+
+
+                    //try to block
+                    $result = $client->execute('block', array($hash));
                     if ($result[0]['hash'])
                         return ("/block/{$result[0]['hash']}");
+
+                    //try to tx
+                    $result = $client->execute('printtx', array($hash));
+                    if ($result['hash'])
+                        return ("/tx/{$result['hash']}");
+                    //try address
+                    $result = $client->execute('address', array($hash));
+                    if (!($result['error']['error']))
+                        return ("/address/{$result['address']}");
+                } catch (Exception $e) {
+                    return "/";
                 }
+            });
 
-                if (!preg_match("/^([0-9a-z]{1,150})$/ims", $hash))
-                    return false;
+            if ($res)
+                Flight::redirect($res);
+            else
+                return Flight::renderTemplate('error', array(
+                            'error' => 'Invalid query',
+                ));
+        }
 
+        $offset = $onpage * ($page - 1);
 
-                //try to block
-                $result = $client->execute('block', array($hash));
-                if ($result[0]['hash'])
-                    return ("/block/{$result[0]['hash']}");
+        $top = Flight::top();
+        $f = 'cache';
 
-                //try to tx
-                $result = $client->execute('printtx', array($hash));
-                if ($result['hash'])
-                    return ("/tx/{$result['hash']}");
-                //try address
-                $result = $client->execute('address', array($hash));
-                if (!($result['error']['error']))
-                    return ("/address/{$result['address']}");
-            } catch (Exception $e) {
-                return "/";
-            }
+        if ($top['hash'] != memget("listcachedtop"))
+            $f = 'cacheNo';
+
+        $result = $f("blocks-$page", function() use($client, $onpage, $offset) {
+            $res = $client->execute('chain', array($onpage, $offset));
+            $top = $res['list'][0]['hash'];
+            memset("listcachedtop", $top);
+            return $res;
         });
 
-        if ($res)
-            Flight::redirect($res);
-        else
-            return Flight::renderTemplate('error', array(
-                        'error' => 'Invalid query',
-            ));
+        $items = $result['count'];
+        $pages = ceil($items / $onpage);
+
+        if ($page > $pages)
+            $page = 1;
+    } catch (Exception $e) {
+        Flight::renderTemplate('error', array(
+            'error' => $e->getMessage(),
+        ));
     }
-
-    $offset = $onpage * ($page - 1);
-
-    $top = Flight::top();
-    $f = 'cache';
-
-    if ($top['hash'] != memget("listcachedtop"))
-        $f = 'cacheNo';
-
-    $result = $f("blocks-$page", function() use($client, $onpage, $offset) {
-        $res = $client->execute('chain', array($onpage, $offset));
-        $top = $res['list'][0]['hash'];
-        memset("listcachedtop", $top);
-        return $res;
-    });
-
-    $items = $result['count'];
-    $pages = ceil($items / $onpage);
-
-    if ($page > $pages)
-        $page = 1;
 
     Flight::renderTemplate('index', array(
         'list' => $result,
