@@ -33,6 +33,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/nodes">Peer info</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/mempool">Memory pool</a>
+                    </li>
                 </ul>
                 <form action='/' method='GET' class="form-inline mt-2 mt-md-0">
                     <input name='q' class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">

@@ -96,7 +96,7 @@
                         <div class="col text-center">
 
                             <?php if ($tx['coinbase']): ?>
-                                <a href='#coinbase'>coinbase</a>
+                                <a href='/block/<?php echo $tx['fromBlock'] ?>#coinbase'>coinbase</a>
                             <?php else: ?>
                                 <?php foreach ($tx['in'] as $in): ?>
                                     <div class='row'>
