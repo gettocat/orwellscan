@@ -15,16 +15,15 @@
             <td><a href='/address/<?php echo $addr['hash160'] ?>'><?php echo $addr['hash160'] ?></a></td>
         </tr>
         <?php
-        $txcount = count($addr['unspent']);
+        $txcount = ($addr['unspent']['count']);
         $spnt_cnt = 0;
         $spent = 0;
         $unspent = 0;
-        foreach ($addr['unspent'] as $v): {
+        foreach ($addr['unspent']['list'] as $v): {
                 if (!$v['spent'] && !$v['spentHash'])
                     $unspent+=$v['amount'] / 10e8;
                 else {
                     $spent += $v['amount'] / 10e8;
-                    $txcount+=1;
                     $spnt_cnt+=1;
                 }
             }
@@ -32,17 +31,17 @@
         ?>
         <tr>
             <td>Tx coint</td>
-            <td><?php $txcount ?></td>
+            <td><?php echo $txcount ?></td>
         </tr>
 
         <tr>
             <td>Unspent inputs</td>
-            <td><?php echo count($addr['unspent']) ?></td>
+            <td><?php echo count($addr['unspent']['list']) ?></td>
         </tr>
 
         <tr>
             <td>Spent inputs</td>
-            <td><?php echo count($addr['unspent']) - $spnt_cnt ?></td>
+            <td><?php echo count($addr['unspent']['list']) - $spnt_cnt ?></td>
         </tr>
 
         <tr>

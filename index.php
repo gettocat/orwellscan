@@ -205,7 +205,7 @@ Flight::route('/address/@addr', function($address) {
 
         $info['pager'] = array(
             'path' => '?',
-            'count' => $info['unspent']['items'],
+            'count' => $info['unspent']['count'],
             'pages' => $pages,
             'page' => $page,
             'onpage' => $onpage,
@@ -258,7 +258,7 @@ Flight::route('/db(/@addr)(/@dataset)', function($db, $dataset) {
 
         $info['pager'] = array(
             'path' => '?',
-            'count' => $info['items'],
+            'count' => $info['count'],
             'pages' => $pages,
             'page' => $page,
             'onpage' => $onpage,
