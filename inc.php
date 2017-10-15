@@ -8,7 +8,7 @@ Class Config {
     public static $sitename = 'orwellscan';
     public static $memcache_host = 'localhost';
     public static $memcache_port = 11211;
-    public static $onpage = 10;
+    public static $onpage = 100;
 
 }
 
