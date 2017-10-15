@@ -1,0 +1,8 @@
+{
+    "name": "gettocat/orwellscan",
+    "type": "project",
+    "require": {
+        "mikecao/flight": "^1.3",
+        "fguillot/json-rpc": "^1.2.4"
+    }
+}
