@@ -1,11 +1,12 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL & ~E_NOTICE);
+include 'inc.php';
+
+ini_set('display_errors', Config::$display_errors);
+ini_set('display_startup_errors', Config::$display_errors);
+error_reporting(Config::$error_reporting);
 
 include 'vendor/autoload.php';
-include 'inc.php';
 
 use JsonRPC\Client;
 
