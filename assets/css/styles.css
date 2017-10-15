@@ -1,0 +1,61 @@
+.block {
+    margin-bottom:20px;
+    background-color:#e9ecef;
+    padding:8px
+}
+
+.block:nth-child(even) {
+    background-color:#fff;
+}
+
+.block a, .block a:link, .block a:hover,.block b {
+
+}
+
+.block-info h3,.tx-info h3 {
+    margin-top:50px;
+}
+
+.tx-info h5 {
+    margin-top:20px;    
+}
+
+.txlist .tx-even {
+    background-color:#e9ecef;
+}
+
+.txlist .selected,.txlist .selected a{
+    color:red;
+    font-weight: bold
+}
+
+.hide {
+    display:none
+}
+
+.tx-info .pad {
+    margin:20px;
+    margin-right:0
+}
+
+.red {
+    color:red
+}
+
+.green {
+    color:green
+}
+
+.content-container {
+    min-height: 700px;
+}
+
+.black {
+    background-color: #343a40;
+    color: #fff;
+}
+
+
+.footer {
+    padding:20px;
+}
