@@ -69,15 +69,10 @@ Flight::route('/', function() {
         $offset = $onpage * ($page - 1);
 
         $top = Flight::top();
-        $f = 'cache';
 
-        if ($top['hash'] != memget("listcachedtop"))
-            $f = 'cacheNo';
-
-        $result = $f("blocks-$page", function() use($client, $onpage, $offset) {
+        $result = cache("blocks-$page-{$top['hash']}", function() use($client, $onpage, $offset) {
             $res = $client->execute('chain', array($onpage, $offset));
-            $top = $res['list'][0]['hash'];
-            memset("listcachedtop", $top);
+            $top = Flight::top(true);
             return $res;
         });
 
@@ -371,7 +366,12 @@ Flight::map('renderTemplate', function($template, $data) {
 });
 
 Flight::set('rpc', new Client('http://' . Config::$nodeRpcHost . ':' . Config::$nodeRpcPort));
-Flight::map('top', function() {
+Flight::map('top', function($forse = false) {
+
+    if ($forse) {
+        memfree('besttophash');
+        Flight::set('tophash', null);
+    }
 
     if (!Flight::has('tophash')) {
         $top = cache("besttophash", function() {
