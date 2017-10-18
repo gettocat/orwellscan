@@ -36,21 +36,21 @@
 
         <tr>
             <td>Unspent inputs</td>
-            <td><?php echo count($addr['unspent']['list']) ?></td>
+            <td><?php echo $addr['unspent']['stats']['unspent_inputs'] ?></td>
         </tr>
 
         <tr>
             <td>Spent inputs</td>
-            <td><?php echo count($addr['unspent']['list']) - $spnt_cnt ?></td>
+            <td><?php echo ($addr['unspent']['stats']['spent_inputs'])  ?></td>
         </tr>
 
         <tr>
             <td>Unspent balance</td>
-            <td><?php echo number_format($unspent) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['unspent_amount']) ?></td>
         </tr>
         <tr>
             <td>Spent balance</td>
-            <td><?php echo number_format($spent) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['spent_amount']) ?></td>
         </tr>
         <tr>
             <td>Db list</td>

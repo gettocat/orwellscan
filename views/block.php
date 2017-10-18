@@ -79,7 +79,13 @@
         </tr>
         <tr>
             <td>Amount</td>
-            <td><?php echo sprintf("%.9f", $coinbase['out'][0]['amount'] / 1e8) ?> (<?php echo $block['reward'] ?> + <?php echo sprintf("%.9f", $coinbase['out'][0]['amount'] / 1e8 - $block['reward']) ?>)</td>
+            <?php
+            $coinbaseamount = 0;
+            foreach ($coinbase['out'] as $o){
+                $coinbaseamount+=$o['amount']/1e8;
+            }
+            ?>
+            <td><?php echo sprintf("%.9f", $coinbaseamount) ?> (<?php echo $block['reward'] ?> + <?php echo sprintf("%.9f", $coinbaseamount - $block['reward']) ?>)</td>
         </tr>
         <tr>
             <td>Mined By</td>
