@@ -41,16 +41,16 @@
 
         <tr>
             <td>Spent inputs</td>
-            <td><?php echo ($addr['unspent']['stats']['spent_inputs'])  ?></td>
+            <td><?php echo ($addr['unspent']['stats']['spent_inputs']) ?></td>
         </tr>
 
         <tr>
             <td>Unspent balance</td>
-            <td><?php echo number_format($addr['unspent']['stats']['unspent_amount']) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['unspent_amount'] / 10e8, 9) ?></td>
         </tr>
         <tr>
             <td>Spent balance</td>
-            <td><?php echo number_format($addr['unspent']['stats']['spent_amount']) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['spent_amount'] / 10e8, 9) ?></td>
         </tr>
         <tr>
             <td>Db list</td>
@@ -62,7 +62,7 @@
     <?php
     $list = $addr['unspent']['list'];
     ?>
-    <h3>Transactions (<?php echo ($addr['pager']['count'])?>)</h3>
+    <h3>Transactions (<?php echo ($addr['pager']['count']) ?>)</h3>
     <table class="table table-bordered txlist table-responsive">
         <tr>
             <th>Tx from</th>
