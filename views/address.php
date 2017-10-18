@@ -21,9 +21,9 @@
         $unspent = 0;
         foreach ($addr['unspent']['list'] as $v): {
                 if (!$v['spent'] && !$v['spentHash'])
-                    $unspent+=$v['amount'] / 10e8;
+                    $unspent+=$v['amount'] / 1e8;
                 else {
-                    $spent += $v['amount'] / 10e8;
+                    $spent += $v['amount'] / 1e8;
                     $spnt_cnt+=1;
                 }
             }
@@ -46,11 +46,11 @@
 
         <tr>
             <td>Unspent balance</td>
-            <td><?php echo number_format($addr['unspent']['stats']['unspent_amount'] / 10e8, 9) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['unspent_amount'] / 1e8, 9) ?></td>
         </tr>
         <tr>
             <td>Spent balance</td>
-            <td><?php echo number_format($addr['unspent']['stats']['spent_amount'] / 10e8, 9) ?></td>
+            <td><?php echo number_format($addr['unspent']['stats']['spent_amount'] / 1e8, 9) ?></td>
         </tr>
         <tr>
             <td>Db list</td>
