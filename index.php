@@ -328,11 +328,10 @@ Flight::route('/nodes', function() {
 
     try {
 
-
         $client = Flight::get('rpc');
         $info = cache("nodes", function() use($client) {
             return $client->execute('peerinfo');
-        }, 300);
+        }, 60);
 
         if ($info['error'])
             throw new Exception($info['error']['error']);
@@ -351,8 +350,17 @@ Flight::route('/mempool', function() {
     Flight::view()->set('title', 'Explore mempool in orwell network - ' . Config::$title);
 
     try {
-        //$client = Flight::get('rpc');
-        throw new Exception("Not implemented yet");
+        $client = Flight::get('rpc');
+        $info = cache("mempoolinfo", function() use($client) {
+            return $client->execute('mempoolinfo');
+        }, 30);
+
+        if ($info['error'])
+            throw new Exception($info['error']['error']);
+
+        Flight::renderTemplate('mempool', array(
+            'list' => $info,
+        ));
     } catch (Exception $e) {
         Flight::renderTemplate('error', array(
             'error' => $e->getMessage(),

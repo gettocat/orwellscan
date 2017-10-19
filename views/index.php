@@ -29,8 +29,8 @@
             <a target="_blank" href="/height/<?php echo $v['height'] ?>"><?php echo $v['height'] ?></a>
         </div>
 
-        <div class="col-7 col-xs-6">
-            <a target="_blank" href="/block/<?php echo $v['hash'] ?>"><?php echo truncate($v['hash'], 1, 8) ?></a><br />
+        <div style='overflow-x: hidden' class="col-7 col-xs-6">
+            <a target="_blank" href="/block/<?php echo $v['hash'] ?>"><?php echo $v['hash']?></a><br />
             output <?php echo number_format($v['output']) ?>  
         </div>
 
