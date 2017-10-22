@@ -165,7 +165,7 @@
             <tr class='content<?php echo $i ?> hide'>
                 <td style='overflow-x: overlay' colspan="3" class='<?php echo $i % 2 == 0 ? 'tx-even' : '' ?>'>
                     <?php if ($d['content']): ?>
-                        <pre><?php echo json_encode($d['content'], JSON_PRETTY_PRINT) ?></pre>
+                        <pre><?php echo htmlentities(json_encode($d['content'], JSON_PRETTY_PRINT)) ?></pre>
                     <?php else: ?>
                         < <?php echo $d['algorithm']?$d['algorithm']:'rsa'?> encrypted content >
                     <?php endif ?>
