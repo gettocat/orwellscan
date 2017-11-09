@@ -79,7 +79,7 @@
 
 
                 <td>
-                    <a name='#<?php echo $tx['hash'] ?>'></a>
+                    <a name='<?php echo $tx['hash'] ?>'></a>
                     <a href="/tx/<?php echo $tx['hash'] ?>"><?php echo $tx['hash'] ?></a>
                 </td>
                 <td class='text-center'><?php echo $tx['in_count'] ?></td>
@@ -118,7 +118,7 @@
 
 
                             <?php foreach ($tx['out'] as $k => $out): ?>
-                                <a name='#<?php echo $tx['hash'] ?>-<?php echo $k ?>'></a>
+                                <a name='<?php echo $tx['hash'] ?>-<?php echo $k ?>'></a>
                                 <div class='row <?php if (isset($_GET['out']) && $_GET['out'] == $k) echo 'selected' ?>'>
                                     <div class='col-sm-8'>
                                         <a href='/address/<?php echo $out['addr'] ?>'><?php echo $out['addr'] ?></a> 

@@ -108,7 +108,7 @@
 
 
                 <td>
-                    <a name='#<?php echo $tx['hash'] ?>'></a>
+                    <a name='<?php echo $tx['hash'] ?>'></a>
                     <a href="/tx/<?php echo $tx['hash'] ?>"><?php echo $tx['hash'] ?></a>
                 </td>
                 <td class='text-center'><?php echo $tx['in_count'] ?></td>

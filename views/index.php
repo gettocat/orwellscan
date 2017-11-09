@@ -26,11 +26,11 @@
     <div class="row block">
 
         <div class="col-1  col-xs-2  text-center">
-            <a target="_blank" href="/height/<?php echo $v['height'] ?>"><?php echo $v['height'] ?></a>
+            <a href="/height/<?php echo $v['height'] ?>"><?php echo $v['height'] ?></a>
         </div>
 
         <div style='overflow-x: hidden' class="col-7 col-xs-6">
-            <a target="_blank" href="/block/<?php echo $v['hash'] ?>"><?php echo $v['hash']?></a><br />
+            <a href="/block/<?php echo $v['hash'] ?>"><?php echo $v['hash']?></a><br />
             output <?php echo number_format($v['output']) ?>  
         </div>
 

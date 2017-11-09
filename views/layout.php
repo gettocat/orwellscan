@@ -61,7 +61,7 @@
                 </div>
                 <br />
 
-                © 2017 Powered by <a target='_blank' href='http://twitter.com/orwellcat'>Nanocat</a> <a target="_blank" rel='nofollow' href='https://github.com/gettocat/orwellscan'>Source code</a>
+                © <?php echo date("Y")?> Powered by <a target='_blank' href='http://twitter.com/orwellcat'>Nanocat</a> <a target="_blank" rel='nofollow' href='https://github.com/gettocat/orwellscan'>Source code</a>
 
             </div>
 
