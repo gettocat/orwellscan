@@ -13,6 +13,41 @@ use JsonRPC\Client;
 Flight ::set('flight.log_errors', false);
 Flight:: set('flight.handle_errors', false);
 
+Flight::route('/network/stats', function() {
+
+    $top = Flight::top();
+    $height = $top['height'];
+    $dbcount = 0;
+    try {
+        $client = Flight::get('rpc');
+
+        $options = array();
+        $info = cache("db$db-$dataset-$page", function() use($client, $options) {
+            return $client->execute('dblist', array(1000));
+        });
+
+        $consensus = cache("consensus", function() use($client) {
+            return $client->execute('consensus', array());
+        }, 300);
+
+        if ($info['error'])
+            throw new Exception($info['error']['error']);
+
+        $dbcount = $info['count'];
+    } catch (Exception $e) {
+        
+    }
+
+    if ($_GET['format'] == 'json') {
+
+        die(json_encode(array(
+            'height' => $height,
+            'consensus' => $consensus,
+            'db.items.count' => $dbcount
+        )));
+    }
+});
+
 //+caching
 Flight::route('/', function() {
     Flight::view()->set('title', 'Orwell p2p network block explorer - ' . Config::$title);
