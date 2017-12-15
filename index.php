@@ -87,7 +87,7 @@ Flight::route('/', function() {
         ));
     }
 
-    Flight::renderTemplate('index', array(
+    $res = array(
         'list' => $result,
         'pager' => array(
             'path' => '?',
@@ -98,7 +98,15 @@ Flight::route('/', function() {
             'nearLeft' => (($page - 2) < 1) ? 1 : $page - 2,
             'nearRight' => ($page + 2 > $pages) ? $pages : $page + 2,
         ),
-    ));
+    );
+
+    if (!$_GET['format'])
+        Flight::renderTemplate('index', $res);
+    else {
+        if ($_GET['format'] == 'json') {
+            die(json_encode($res));
+        }
+    }
 });
 
 Flight::route('/block/@hash', function($hash) {
