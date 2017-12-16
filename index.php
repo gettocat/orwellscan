@@ -22,9 +22,10 @@ Flight::route('/network/stats', function() {
         $client = Flight::get('rpc');
 
         $options = array();
-        $info = cache("db$db-$dataset-$page", function() use($client, $options) {
+        $info = cache("dblist-1", function() use($client, $options) {
             return $client->execute('dblist', array(1000));
         });
+        $dbcount = $info['count'];
 
         $consensus = cache("consensus", function() use($client) {
             return $client->execute('consensus', array());
@@ -33,7 +34,6 @@ Flight::route('/network/stats', function() {
         if ($info['error'])
             throw new Exception($info['error']['error']);
 
-        $dbcount = $info['count'];
     } catch (Exception $e) {
         
     }
