@@ -5,7 +5,7 @@ Class Config {
     public static $error_reporting = 0;
     public static $display_errors = 0;
     public static $title = 'Orwellscan';
-    public static $nodeRpcHost = 'host.docker.internal';
+    public static $nodeRpcHost = '127.0.0.1';
     public static $nodeRpcPort = 41991;
     public static $sitename = 'orwellscan';
     public static $memcache_host = 'localhost';
@@ -13,6 +13,10 @@ Class Config {
     public static $onpage = 100;
 
 }
+
+if ($_SERVER['HTTP_HOST'] == 'orwellscan') {//debug on local machine
+	Config::$nodeRpcHost = 'host.docker.internal';
+}	
 
 function time_since($since) {
     $chunks = array(
