@@ -5,8 +5,8 @@ Class Config {
     public static $error_reporting = 0;
     public static $display_errors = 0;
     public static $title = 'Orwellscan';
-    public static $nodeRpcHost = '127.0.0.1';
-    public static $nodeRpcPort = 49999;
+    public static $nodeRpcHost = 'host.docker.internal';
+    public static $nodeRpcPort = 41991;
     public static $sitename = 'orwellscan';
     public static $memcache_host = 'localhost';
     public static $memcache_port = 11211;

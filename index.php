@@ -178,7 +178,7 @@ Flight::route('/tx/@hash', function($hash) {
 
         $client = Flight::get('rpc');
         $tx = cache("tx$hash", function() use($client, $hash) {
-            return $client->execute('printtx', array($hash, 1));
+            return $client->execute('tx', array($hash, 1));
         });
 
         if (!count($tx))

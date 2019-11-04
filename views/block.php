@@ -7,7 +7,7 @@
         </tr>
         <tr>
             <td>Version</td>
-            <td><?php echo $block['ver'] ?></td>
+            <td><?php echo $block['version'] ?></td>
         </tr>
         <tr>
             <td>Hash</td>
@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td>Prev block</td>
-            <td><a href="/block/<?php echo $block['prev_block'] ?>"><?php echo $block['prev_block'] ?></a></td>
+            <td><a href="/block/<?php echo $block['prev'] ?>"><?php echo $block['prev'] ?></a></td>
         </tr>
         <?php if ($block['next_block']): ?>
             <tr>
@@ -29,7 +29,7 @@
         <?php endif ?>
         <tr>
             <td>Merkle root</td>
-            <td><?php echo $block['mrkl_root'] ?></td>
+            <td><?php echo $block['merkle'] ?></td>
         </tr>
         <tr>
             <td>Block time</td>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <td>Difficulty</td>
-            <td><?php echo number_format($block['diff']) ?></td>
+            <td><?php echo number_format($block['bits']) ?></td>
         </tr>
         <tr>
             <td>Size(kB)</td>
@@ -74,8 +74,8 @@
             <td><a href="/tx/<?php echo $coinbase['hash'] ?>"><?php echo $coinbase['hash'] ?></a></td>
         </tr>
         <tr>
-            <td>Coinbase</td>
-            <td><?php echo pack("H*", $coinbase['in'][0]['scriptSig']) ?></td>
+            <td>Block author</td>
+            <td><a href="/address/<?php echo $coinbase['in'][0]['writerAddress'] ?>"><?php echo $coinbase['in'][0]['writerAddress'] ?></a></td>
         </tr>
         <tr>
             <td>Amount</td>
@@ -89,7 +89,7 @@
         </tr>
         <tr>
             <td>Mined By</td>
-            <td><a href="/address/<?php echo $coinbase['out'][0]['addr'] ?>"><?php echo $coinbase['out'][0]['addr'] ?></a></td>
+            <td><a href="/address/<?php echo $coinbase['out'][0]['address'] ?>"><?php echo $coinbase['out'][0]['address'] ?></a></td>
         </tr>
     </table>
 
@@ -111,8 +111,8 @@
                     <a name='<?php echo $tx['hash'] ?>'></a>
                     <a href="/tx/<?php echo $tx['hash'] ?>"><?php echo $tx['hash'] ?></a>
                 </td>
-                <td class='text-center'><?php echo $tx['in_count'] ?></td>
-                <td class='text-center'><?php echo $tx['out_count'] ?></td>
+                <td class='text-center'><?php echo $tx['in_amount'] ?></td>
+                <td class='text-center'><?php echo $tx['out_amount'] ?></td>
                 <td class='text-center'><?php echo sprintf("%.9f", $tx['fee'] / 1e8) ?></td>
                 <td class='text-center'><?php echo round($tx['size'] / 1024, 2) ?></td>
 
@@ -130,7 +130,7 @@
                                 <?php foreach ($tx['in'] as $in): ?>
                                     <div class='row'>
                                         <div class='col-sm-8'>
-                                            <a href='/address/<?php echo $in['prevAddress'] ?>'><?php echo $in['prevAddress'] ?></a> 
+                                            <a href='/address/<?php echo $in['writerAddress'] ?>'><?php echo $in['writerAddress'] ?></a>
                                         </div>
                                         <div class='col-sm-4'>
                                             <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>... out <<?php echo $in['index'] ?>></a>
@@ -150,7 +150,7 @@
                                 <a name='#<?php echo $tx['hash'] ?>-<?php echo $k ?>'></a>
                                 <div class='row'>
                                     <div class='col-sm-8'>
-                                        <a href='/address/<?php echo $out['addr'] ?>'><?php echo $out['addr'] ?></a> 
+                                        <a href='/address/<?php echo $out['address'] ?>'><?php echo $out['address'] ?></a>
                                     </div>
                                     <div class='col-sm-4'>
                                         <?php echo sprintf("%.9f", $out['amount'] / 1e8) ?>

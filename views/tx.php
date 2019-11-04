@@ -46,12 +46,12 @@
 
         <tr>
             <td>Common input</td>
-            <td><?php echo sprintf("%.9f", $tx['commonInput']) ?></td>
+            <td><?php echo sprintf("%.9f", $tx['in_amount']) ?></td>
         </tr>
 
         <tr>
             <td>Common output</td>
-            <td><?php echo sprintf("%.9f", $tx['commonOut']) ?></td>
+            <td><?php echo sprintf("%.9f", $tx['out_amount']) ?></td>
         </tr>
 
         <tr>
@@ -82,8 +82,8 @@
                     <a name='<?php echo $tx['hash'] ?>'></a>
                     <a href="/tx/<?php echo $tx['hash'] ?>"><?php echo $tx['hash'] ?></a>
                 </td>
-                <td class='text-center'><?php echo $tx['in_count'] ?></td>
-                <td class='text-center'><?php echo $tx['out_count'] ?></td>
+                <td class='text-center'><?php echo $tx['in_amount'] ?></td>
+                <td class='text-center'><?php echo $tx['out_amount'] ?></td>
                 <td class='text-center'><?php echo sprintf("%.9f", $tx['fee'] / 1e8) ?></td>
                 <td class='text-center'><?php echo round($tx['size'] / 1024, 2) ?></td>
 
@@ -101,7 +101,7 @@
                                 <?php foreach ($tx['in'] as $in): ?>
                                     <div class='row'>
                                         <div class='col-sm-8'>
-                                            <a href='/address/<?php echo $in['prevAddress'] ?>'><?php echo $in['prevAddress'] ?></a> 
+                                            <a href='/address/<?php echo $in['writerAddress'] ?>'><?php echo $in['writerAddress'] ?></a>
                                         </div>
                                         <div class='col-sm-4'>
                                             <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>... out <<?php echo $in['index'] ?>></a>
@@ -121,7 +121,7 @@
                                 <a name='<?php echo $tx['hash'] ?>-<?php echo $k ?>'></a>
                                 <div class='row <?php if (isset($_GET['out']) && $_GET['out'] == $k) echo 'selected' ?>'>
                                     <div class='col-sm-8'>
-                                        <a href='/address/<?php echo $out['addr'] ?>'><?php echo $out['addr'] ?></a> 
+                                        <a href='/address/<?php echo $out['address'] ?>'><?php echo $out['address'] ?></a>
                                     </div>
                                     <div class='col-sm-4'>
                                         <?php echo sprintf("%.9f", $out['amount'] / 1e8) ?>
@@ -191,7 +191,7 @@
 
                 <?php foreach ($tx['in'] as $i => $in): ?>
                     <h5>Input[<?php echo $i ?>]</h5>
-                    <pre><?php echo $in['publicKey'] ?></pre>
+                    <pre><?php echo $in['writer'] ?></pre>
                 <?php endforeach ?>
 
             </div>
@@ -199,7 +199,7 @@
 
                 <?php foreach ($tx['in'] as $i => $in): ?>
                     <h5>Input[<?php echo $i ?>]</h5>
-                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['der'] ?></textarea>
+                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['sign'] ?></textarea>
                 <?php endforeach ?>
 
             </div>
@@ -207,7 +207,7 @@
 
                 <?php foreach ($tx['in'] as $i => $in): ?>
                     <h5>Input[<?php echo $i ?>]</h5>
-                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['scriptSig'] ?></textarea>
+                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['sig'] ?></textarea>
                 <?php endforeach ?>
 
             </div>
