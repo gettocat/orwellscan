@@ -44,7 +44,7 @@
     </table>
 
     <?php if ($db['dataset']): ?>
-        <h3>Datsaset actual settings</h3>
+        <h3>Dataset actual settings</h3>
         <table class='table table-bordered table-hover'>
 
             <tr>
@@ -56,21 +56,26 @@
             <?php $d = $db['actualSettings'] ?>
             <tr class=''>
                 <td>
-                    <?php echo $d['dataset'] ?><br />
-                    <span class='text-muted'><?php echo $d['operator'] ?></span><br />
+                    <?php echo $d['dataset'] ?><br/>
+                    <span class='text-muted'><?php echo $d['operator'] ?></span><br/>
                     <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide");
-                                        return false;'>Show Datascript content</a>
+                            return false;'>Show Datascript content</a>
                 </td>
-                <td><a title='<?php echo $d['writer'] ?>' href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a></td>
-                <td><a title='<?php echo $d['content']['owner_key'] ?>' href='/address/<?php echo $d['content']['owner_key'] ?>'><?php echo truncate($d['content']['owner_key'], true) ?></a></td>
+                <td><a title='<?php echo $d['writer'] ?>'
+                       href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a></td>
+                <td><a title='<?php echo $d['content']['owner_key'] ?>'
+                       href='/address/<?php echo $d['content']['owner_key'] ?>'><?php echo truncate($d['content']['owner_key'], true) ?></a>
+                </td>
                 <td>
                     <?php
                     if ($d['content']['writeScript'] == '5560')
                         echo "PUSHDATA_WRITER<br />OP_CHECKDBPRIVILEGES";
                     else
                         echo "all"
-                        ?>
-                    <a class='ask' tabindex="0" data-toggle="popover" data-trigger="focus" title="writeScript" data-content="WriteScript decides who can write to this database. 5560 mean 0x55 (PUSHDATA_WRITER) + 0x60 (OP_CHECKDBPRIVILEGES), this means that only the owner whose key is the same as the owner_key or whose key is included in the privileges array is able to write"><i class='fa fa-question'></i></a>
+                    ?>
+                    <a class='ask' tabindex="0" data-toggle="popover" data-trigger="focus" title="writeScript"
+                       data-content="WriteScript decides who can write to this database. 5560 mean 0x55 (PUSHDATA_WRITER) + 0x60 (OP_CHECKDBPRIVILEGES), this means that only the owner whose key is the same as the owner_key or whose key is included in the privileges array is able to write"><i
+                                class='fa fa-question'></i></a>
                 </td>
             </tr>
             <tr class='content<?php echo $i ?> hide'>
@@ -85,7 +90,8 @@
 
         </table>
 
-        <h3>Data in dataset <?php echo $db['hash160'] ?>/<?php echo $db['dataset'] ?> (<?php echo ($db['pager']['count'])?>)</h3>
+        <h3>Data in dataset <?php echo $db['addressDomain'] ? ($db['addressDomain'] . " ({$db['hash160']})") : $db['hash160'] ?>/<?php echo $db['dataset'] ?>
+            (<?php echo($db['pager']['count']) ?>)</h3>
         <table class='table table-bordered table-hover'>
 
             <tr>
@@ -96,16 +102,18 @@
             <?php foreach ($db['list'] as $i => $d): ?>
 
                 <tr class='<?php echo $i % 2 == 0 ? 'tx-even' : '' ?>'>
-                <a name='<?php echo $d['content']['oid'] ?>'></a>
-                <td>
-                    <?php echo $d['dataset'] ?><br />
-                    <span class='text-muted'><?php echo $d['operator'] ?></span>
-                    <br /><br />
-                    <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide");
-                                    return false;'>Show Datascript content</a>
-                </td>
-                <td><a title='<?php echo $d['writer'] ?>' href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a></td>
-                <td><a href='#<?php echo $d['content']['oid'] ?>'><?php echo $d['content']['oid'] ?></a></td>
+                    <a name='<?php echo $d['content']['oid'] ?>'></a>
+                    <td>
+                        <?php echo $d['dataset'] ?><br/>
+                        <span class='text-muted'><?php echo $d['operator'] ?></span>
+                        <br/><br/>
+                        <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide");
+                                return false;'>Show Datascript content</a>
+                    </td>
+                    <td><a title='<?php echo $d['writer'] ?>'
+                           href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a>
+                    </td>
+                    <td><a href='#<?php echo $d['content']['oid'] ?>'><?php echo $d['content']['oid'] ?></a></td>
                 </tr>
                 <tr class='content<?php echo $i ?> hide'>
                     <td style='overflow-x: overlay' colspan="3" class='<?php echo $i % 2 == 0 ? 'tx-even' : '' ?>'>
@@ -122,7 +130,9 @@
         <?php if ($db['pager']['pages'] > 1): ?>
             <ul class="pagination pagination-lg  justify-content-center">
                 <?php if ($db['pager']['page'] > 1): ?>
-                    <li class="page-item"><a class="page-link" href="<?php echo $db['pager']['path'] ?>page=<?php echo $db['pager']['page'] - 1 ?>">Prev</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="<?php echo $db['pager']['path'] ?>page=<?php echo $db['pager']['page'] - 1 ?>">Prev</a>
+                    </li>
                 <?php endif; ?>
 
                 <?php for ($i = $db['pager']['nearLeft']; $i <= $db['pager']['nearRight']; $i++): ?>
@@ -131,17 +141,22 @@
                             <a class="page-link" href="#"><?php echo $i ?> <span class="sr-only">(current)</span></a>
                         </li>
                     <?php else: ?>
-                        <li class="page-item"><a class="page-link" href="<?php echo $db['pager']['path'] ?>page=<?php echo $i ?>"><?php echo $i ?></a></li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="<?php echo $db['pager']['path'] ?>page=<?php echo $i ?>"><?php echo $i ?></a>
+                        </li>
                     <?php endif; ?>
                 <?php endfor; ?>
 
                 <?php if ($db['pager']['page'] < $db['pager']['pages']): ?>
-                    <li class="page-item"><a class="page-link" href="<?php echo $db['pager']['path'] ?>page=<?php echo $db['pager']['page'] + 1 ?>">Next</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="<?php echo $db['pager']['path'] ?>page=<?php echo $db['pager']['page'] + 1 ?>">Next</a>
+                    </li>
                 <?php endif; ?>
             </ul>
         <?php endif; ?>
     <?php else: ?>
-        <h3>Datasets in db <?php echo $db['hash160'] ?></h3>
+        <h3>Datasets in
+            db <?php echo $db['addressDomain'] ? ($db['addressDomain'] . " ({$db['hash160']})") : $db['hash160'] ?></h3>
         <table class='table table-bordered table-hover'>
 
             <tr>
@@ -155,23 +170,33 @@
 
                 <tr class='<?php echo $i % 2 == 0 ? 'tx-even' : '' ?>'>
                     <td>
-                        <a href='/db/<?php echo $db['hash160'] ?>/<?php echo $d['dataset'] ?>'><?php echo $d['dataset'] ?></a><br /><br />
+                        <b><a href='/db/<?php echo $db['hash160'] ?>/<?php echo $d['dataset'] ?>'><?php echo $d['dataset'] ?></a></b><br />
+                        <a href="/db/<?php echo $db['hash160'] ?>/<?php echo $d['dataset'] ?>">dataset info</a>
+                        <a href="/records/<?php echo $db['hash160'] ?>/<?php echo $d['dataset'] ?>">dataset records</a>
+
+                        <br/><br/>
                         <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide");
-                                        return false;'>Show Datascript content</a>
+                                return false;'>Show Datascript content</a>
                     </td>
-                    <td><a title='<?php echo $d['writer'] ?>' href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a></td>
-                    <td><a title='<?php echo $d['content']['owner_key'] ?>' href='/address/<?php echo $d['content']['owner_key'] ?>'><?php echo truncate($d['content']['owner_key'], true) ?></a></td>
+                    <td><a title='<?php echo $d['writer'] ?>'
+                           href='/address/<?php echo $d['writer'] ?>'><?php echo truncate($d['writer'], true) ?></a>
+                    </td>
+                    <td><a title='<?php echo $d['content']['owner_key'] ?>'
+                           href='/address/<?php echo $d['content']['owner_key'] ?>'><?php echo truncate($d['content']['owner_key'], true) ?></a>
+                    </td>
                     <td>
                         <?php
                         if ($d['content']['writeScript'] == '5560')
                             echo "PUSHDATA_WRITER<br />OP_CHECKDBPRIVILEGES";
                         else
                             echo "all"
-                            ?>
-                        <a class='ask' tabindex="0" data-toggle="popover" data-trigger="focus" title="writeScript" data-content="WriteScript decides who can write to this database. 5560 mean 0x55 (PUSHDATA_WRITER) + 0x60 (OP_CHECKDBPRIVILEGES), this means that only the owner whose key is the same as the owner_key or whose key is included in the privileges array is able to write"><i class='fa fa-question'></i></a>
+                        ?>
+                        <a class='ask' tabindex="0" data-toggle="popover" data-trigger="focus" title="writeScript"
+                           data-content="WriteScript decides who can write to this database. 5560 mean 0x55 (PUSHDATA_WRITER) + 0x60 (OP_CHECKDBPRIVILEGES), this means that only the owner whose key is the same as the owner_key or whose key is included in the privileges array is able to write"><i
+                                    class='fa fa-question'></i></a>
                     </td>
                     <td>
-                        <?php echo $d['dataset'] ?><br />
+                        <?php echo $d['dataset'] ?><br/>
                         <span class='text-muted'><?php echo $d['operator'] ?></span>
                     </td>
                 </tr>
@@ -187,8 +212,6 @@
             <?php endforeach ?>
         </table>
     <?php endif ?>
-
-
 
 
 </div>

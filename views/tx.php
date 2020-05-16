@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td>Version</td>
-            <td><?php echo $tx['version'] ?></td>
+            <td><?php echo $tx['v'] ?></td>
         </tr>
         <tr>
             <td>Size</td>
@@ -30,7 +30,9 @@
         <?php if ($tx['fromBlock']): ?>
             <tr>
                 <td>Block</td>
-                <td><a href='/block/<?php echo $tx['fromBlock'] ?>'><?php echo $tx['fromBlock'] ?></a> tx[<?php echo $tx['fromIndex'] ?>]</td>
+                <td><a href='/block/<?php echo $tx['fromBlock'] ?>'><?php echo $tx['fromBlock'] ?></a>
+                    tx[<?php echo $tx['fromIndex'] ?>]
+                </td>
             </tr>
         <?php else: ?>
             <tr>
@@ -58,6 +60,49 @@
             <td>Fee</td>
             <td><?php echo sprintf("%.9f", $tx['fee'] / 1e8) ?></td>
         </tr>
+
+        <?php if ($tx['cb']): ?>
+            <tr>
+                <td>Coinbase author</td>
+                <td><?php echo $tx['coinbaseData']['authorName'] ?></td>
+            </tr>
+
+            <tr>
+                <td>Coinbase hardware/software</td>
+                <td><?php echo $tx['coinbaseData']['hardwareName'] ?></td>
+            </tr>
+
+            <tr>
+                <td>Coinbase date</td>
+                <td>
+                    <?php if ($tx['coinbaseData']['time']): ?>
+                        <?php echo time_since(time() - $tx['coinbaseData']['time']) ?> ago
+                        / <?php echo date("d.m.Y H:i", $tx['coinbaseData']['time']) ?>
+                    <?php endif ?>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Coinbase signal flags</td>
+                <td>
+                    <?php if (count($tx['coinbaseData']['bytes'])): ?>
+                        <table class="table table-bordered">
+                            <tr>
+                                <?php foreach ($tx['coinbaseData']['bytes'] as $k => $v): ?>
+                                    <td><?php echo $k + 1 ?></td>
+                                <?php endforeach ?>
+                            </tr>
+                            <tr>
+                                <?php foreach ($tx['coinbaseData']['bytes'] as $v): ?>
+                                    <td><?php echo $v ?></td>
+                                <?php endforeach ?>
+                            </tr>
+                        </table>
+                    <?php endif ?>
+                </td>
+            </tr>
+        <?php endif ?>
+
     </table>
 
     <?php
@@ -104,7 +149,8 @@
                                             <a href='/address/<?php echo $in['writerAddress'] ?>'><?php echo $in['writerAddress'] ?></a>
                                         </div>
                                         <div class='col-sm-4'>
-                                            <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>... out <<?php echo $in['index'] ?>></a>
+                                            <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>
+                                                ... out <<?php echo $in['index'] ?>></a>
                                         </div>
                                     </div>
                                 <?php endforeach ?>
@@ -153,12 +199,20 @@
 
             <tr class='<?php echo $i % 2 == 0 ? 'tx-even' : '' ?>'>
                 <td>
-                    <a href='/address/<?php echo $tx['out'][0]['addr'] ?>'><?php echo $tx['out'][0]['addr'] ?></a><br />
-                    <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide"); return false;'>Show datascript content</a>
+                    <?php if ($tx['dataScriptDomain']): ?>
+                        <a href='/address/<?php echo $tx['out'][0]['address'] ?>'><?php echo $tx['dataScriptDomain'] ?></a>
+                    <?php else: ?>
+                        <a href='/address/<?php echo $tx['out'][0]['address'] ?>'><?php echo $tx['out'][0]['address'] ?></a>
+                    <?php endif ?>
+                    <br/>
+                    <a href='#' onclick='$(".content<?php echo $i ?>").toggleClass("hide"); return false;'>Show
+                        datascript content</a>
                 </td>
-                <td><a title='<?php echo $tx['in'][0]['publicKey'] ?>' href='/address/<?php echo $tx['in'][0]['fromAddress'] ?>'><?php echo truncate($tx['in'][0]['publicKey'], true) ?></a></td>
+                <td><a title='<?php echo $tx['s'][0][1] ?>'
+                       href='/address/<?php echo $tx['s'][0][1] ?>'><?php echo truncate($tx['s'][0][1], true) ?></a>
+                </td>
                 <td>
-                    <?php echo $d['dataset'] ?><br />
+                    <?php echo $d['dataset'] ?><br/>
                     <span class='text-muted'><?php echo $d['operator'] ?></span>
                 </td>
             </tr>
@@ -167,7 +221,7 @@
                     <?php if ($d['content']): ?>
                         <pre><?php echo htmlentities(json_encode($d['content'], JSON_PRETTY_PRINT)) ?></pre>
                     <?php else: ?>
-                        < <?php echo $d['algorithm']?$d['algorithm']:'rsa'?> encrypted content >
+                        < <?php echo $d['algorithm'] ? $d['algorithm'] : 'rsa' ?> encrypted content >
                     <?php endif ?>
                 </td>
             </tr>
@@ -179,9 +233,11 @@
     <nav id='rawdatatab' class="nav nav-pills nav-fill" role="tablist">
         <a data-tab='wr' class="nav-item nav-link active" role="tab" href="#">Writers (Public Keys)</a>
         <a data-tab='sig' class="nav-item nav-link" role="tab" href="#">Signatures</a>
-        <a data-tab='scr' class="nav-item nav-link" role="tab" href="#">ScriptSig`s list</a>
         <a data-tab='ds' class="nav-item nav-link" role="tab" href="#">Datascript</a>
         <a data-tab='tx' class="nav-item nav-link" role="tab" href="#">Tx hex</a>
+        <?php if ($tx['cb']): ?>
+            <a data-tab='coinbase' class="nav-item nav-link" role="tab" href="#">Coinbase bytes hex</a>
+        <?php endif ?>
     </nav>
 
 
@@ -189,34 +245,27 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="wr" role="tabpanel" aria-labelledby="home-tab">
 
-                <?php foreach ($tx['in'] as $i => $in): ?>
+                <?php foreach ($tx['s'] as $i => $in): ?>
                     <h5>Input[<?php echo $i ?>]</h5>
-                    <pre><?php echo $in['writer'] ?></pre>
+                    <pre><?php echo $in[1] ?></pre>
                 <?php endforeach ?>
 
             </div>
             <div class="tab-pane fade" id="sig" role="tabpanel" aria-labelledby="profile-tab">
 
-                <?php foreach ($tx['in'] as $i => $in): ?>
+                <?php foreach ($tx['s'] as $i => $in): ?>
                     <h5>Input[<?php echo $i ?>]</h5>
-                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['sign'] ?></textarea>
-                <?php endforeach ?>
-
-            </div>
-            <div class="tab-pane fade" id="scr" role="tabpanel" aria-labelledby="dropdown1-tab">
-
-                <?php foreach ($tx['in'] as $i => $in): ?>
-                    <h5>Input[<?php echo $i ?>]</h5>
-                    <textarea readonly="" class='form-control' rows='10'><?php echo $in['sig'] ?></textarea>
+                    <textarea readonly="" class='form-control' rows='10'><?php echo $in[0] ?></textarea>
                 <?php endforeach ?>
 
             </div>
             <div class="tab-pane fade" id="ds" role="tabpanel" aria-labelledby="dropdown2-tab">
 
                 <h5>Datascript array</h5>
-                <textarea readonly="" class='form-control' rows='10'><?php echo $tx['datascript'] ?></textarea>
+                <textarea readonly="" class='form-control'
+                          rows='10'><?php echo $tx['ds'] ?></textarea>
 
-                <?php foreach ($tx['dslist'] as $i=>$d): ?>
+                <?php foreach ($tx['dslist'] as $i => $d): ?>
                     <h5>Datascript[<?php echo $i ?>]</h5>
                     <textarea readonly="" class='form-control' rows='10'><?php echo $d ?></textarea>
                 <?php endforeach ?>
@@ -227,9 +276,15 @@
                 <textarea readonly="" class='form-control' rows='10'><?php echo $tx['hex'] ?></textarea>
 
             </div>
+            <?php if ($tx['cb']): ?>
+                <div class="tab-pane fade" id="coinbase" role="tabpanel" aria-labelledby="dropdown2-tab">
+
+                    <textarea readonly="" class='form-control' rows='10'><?php echo $tx['cb'] ?></textarea>
+
+                </div>
+            <?php endif ?>
         </div>
     </div>
-
 
 
 </div>

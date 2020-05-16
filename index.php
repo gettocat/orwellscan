@@ -10,10 +10,10 @@ include 'vendor/autoload.php';
 
 use JsonRPC\Client;
 
-Flight ::set('flight.log_errors', false);
+Flight::set('flight.log_errors', false);
 Flight:: set('flight.handle_errors', false);
 
-Flight::route('/network/stats', function() {
+Flight::route('/network/stats', function () {
 
     $top = Flight::top();
     $height = $top['height'];
@@ -22,12 +22,12 @@ Flight::route('/network/stats', function() {
         $client = Flight::get('rpc');
 
         $options = array();
-        $info = cache("dblist-1", function() use($client, $options) {
+        $info = cache("dblist-1", function () use ($client, $options) {
             return $client->execute('dblist', array(1000));
         });
         $dbcount = $info['count'];
 
-        $consensus = cache("consensus", function() use($client) {
+        $consensus = cache("consensus", function () use ($client) {
             return $client->execute('consensus', array());
         }, 300);
 
@@ -35,7 +35,7 @@ Flight::route('/network/stats', function() {
             throw new Exception($info['error']['error']);
 
     } catch (Exception $e) {
-        
+
     }
 
     if ($_GET['format'] == 'json') {
@@ -49,7 +49,7 @@ Flight::route('/network/stats', function() {
 });
 
 //+caching
-Flight::route('/', function() {
+Flight::route('/', function () {
     Flight::view()->set('title', 'Orwell p2p network block explorer - ' . Config::$title);
 
     $client = Flight::get('rpc');
@@ -61,7 +61,7 @@ Flight::route('/', function() {
     try {
 
         if ($_GET['q']) {
-            $res = cache("search-" . $_GET['q'], function() use($client) {
+            $res = cache("search-" . $_GET['q'], function () use ($client) {
                 try {
                     $hash = $_GET['q'];
 
@@ -97,7 +97,7 @@ Flight::route('/', function() {
                 Flight::redirect($res);
             else
                 return Flight::renderTemplate('error', array(
-                            'error' => 'Invalid query',
+                    'error' => 'Invalid query',
                 ));
         }
 
@@ -105,7 +105,7 @@ Flight::route('/', function() {
 
         $top = Flight::top();
 
-        $result = cache("blocks-$page-{$top['hash']}", function() use($client, $onpage, $offset) {
+        $result = cache("blocks-$page-{$top['hash']}", function () use ($client, $onpage, $offset) {
             $res = $client->execute('chain', array($onpage, $offset));
             $top = Flight::top(true);
             return $res;
@@ -144,7 +144,7 @@ Flight::route('/', function() {
     }
 });
 
-Flight::route('/block/@hash', function($hash) {
+Flight::route('/block/@hash', function ($hash) {
     Flight::view()->set('title', 'Explore block ' . $hash . ' at orwell network - ' . Config::$title);
 
     try {
@@ -152,7 +152,7 @@ Flight::route('/block/@hash', function($hash) {
             throw new Exception('Invalid hash');
 
         $client = Flight::get('rpc');
-        $block = cache("block$hash", function() use($client, $hash) {
+        $block = cache("block$hash", function () use ($client, $hash) {
             return $client->execute('block', array($hash));
         });
 
@@ -169,7 +169,7 @@ Flight::route('/block/@hash', function($hash) {
     }
 });
 
-Flight::route('/tx/@hash', function($hash) {
+Flight::route('/tx/@hash', function ($hash) {
     Flight::view()->set('title', 'Explore transaction ' . $hash . ' at orwell network - ' . Config::$title);
 
     try {
@@ -177,12 +177,12 @@ Flight::route('/tx/@hash', function($hash) {
             throw new Exception('Invalid hash');
 
         $client = Flight::get('rpc');
-        $tx = cache("tx$hash", function() use($client, $hash) {
+        $tx = cache("tx$hash", function () use ($client, $hash) {
             return $client->execute('tx', array($hash, 1));
         });
 
         if (!count($tx))
-            throw new Exception("Tx with hash $hash not finded");
+            throw new Exception("Tx with hash $hash not found");
 
         Flight::renderTemplate('tx', array(
             'tx' => $tx,
@@ -194,7 +194,7 @@ Flight::route('/tx/@hash', function($hash) {
     }
 });
 
-Flight::route('/height/@height', function($height) {
+Flight::route('/height/@height', function ($height) {
     Flight::view()->set('title', 'Explore block at height ' . $height . ' in orwell network - ' . Config::$title);
 
     try {
@@ -202,7 +202,7 @@ Flight::route('/height/@height', function($height) {
             throw new Exception('Invalid height');
 
         $client = Flight::get('rpc');
-        $block = cache("height$height", function() use($client, $height) {
+        $block = cache("height$height", function () use ($client, $height) {
             return $client->execute('height', array($height));
         });
 
@@ -219,7 +219,7 @@ Flight::route('/height/@height', function($height) {
     }
 });
 
-Flight::route('/address/@addr', function($address) {
+Flight::route('/address/@addr', function ($address) {
     Flight::view()->set('title', 'Explore address ' . $address . ' in orwell network - ' . Config::$title);
 
     try {
@@ -233,7 +233,7 @@ Flight::route('/address/@addr', function($address) {
 
         $offset = $onpage * ($page - 1);
         $client = Flight::get('rpc');
-        $info = cache("height$address-$page", function() use($client, $address, $onpage, $offset) {
+        $info = cache("height$address-$page", function () use ($client, $address, $onpage, $offset) {
             return $client->execute('address', array($address, $onpage, $offset));
         });
 
@@ -266,7 +266,7 @@ Flight::route('/address/@addr', function($address) {
     }
 });
 
-Flight::route('/db(/@addr)(/@dataset)', function($db, $dataset) {
+Flight::route('/db(/@addr)(/@dataset)', function ($db, $dataset) {
     Flight::view()->set('title', 'Explore p2p database ' . $db . ($dataset ? '/' . $dataset : '') . ' in orwell network - ' . Config::$title);
 
     try {
@@ -286,7 +286,7 @@ Flight::route('/db(/@addr)(/@dataset)', function($db, $dataset) {
         else
             $options = array($db);
 
-        $info = cache("db$db-$dataset-$page", function() use($client, $options) {
+        $info = cache("db$db-$dataset-$page", function () use ($client, $options) {
             return $client->execute('dbinfo', $options);
         });
 
@@ -321,7 +321,59 @@ Flight::route('/db(/@addr)(/@dataset)', function($db, $dataset) {
     }
 });
 
-Flight::route('/databases', function() {
+Flight::route('/records/@addr/@dataset', function ($db, $dataset) {
+    Flight::view()->set('title', 'Explore p2p database ' . $db . ($dataset ? '/' . $dataset : '') . ' records in orwell network - ' . Config::$title);
+
+    try {
+        if (!preg_match("/^[a-z0-9]{10,130}$/ims", $db))//for hash too
+            throw new Exception('Invalid db address');
+
+        $onpage = Config::$onpage;
+        $page = intval($_GET['page']);
+        if (!$page)
+            $page = 1;
+
+        $offset = $onpage * ($page - 1);
+        $client = Flight::get('rpc');
+        $options = array($db, $dataset, $onpage, $offset);
+
+        $info = cache("dbrecords$db-$dataset-$page", function () use ($client, $options) {
+            return $client->execute('dbrecords', $options);
+        });
+
+        if ($info['error'])
+            throw new Exception($info['error']['error']);
+
+        $items = $info['count'];
+        $pages = ceil($items / $onpage);
+
+        if ($page > $pages)
+            $page = 1;
+
+        $info['pager'] = array(
+            'path' => '?',
+            'count' => $info['count'],
+            'pages' => $pages,
+            'page' => $page,
+            'onpage' => $onpage,
+            'nearLeft' => (($page - 2) < 1) ? 1 : $page - 2,
+            'nearRight' => ($page + 2 > $pages) ? $pages : $page + 2,
+        );
+
+        Flight::renderTemplate('dbrecords', array(
+            'address' => $db,
+            'dataset' => $dataset,
+            'db' => $info,
+        ));
+    } catch (Exception $e) {
+        Flight::renderTemplate('error', array(
+            'error' => $e->getMessage(),
+        ));
+    }
+});
+
+
+Flight::route('/databases', function () {
     Flight::view()->set('title', 'Explore p2p databases in orwell network - ' . Config::$title);
 
     try {
@@ -333,7 +385,7 @@ Flight::route('/databases', function() {
 
         $offset = $onpage * ($page - 1);
         $client = Flight::get('rpc');
-        $info = cache("dblist-$page", function() use($client, $onpage, $offset) {
+        $info = cache("dblist-$page", function () use ($client, $onpage, $offset) {
             return $client->execute('dblist', array($onpage, $offset));
         });
 
@@ -366,13 +418,13 @@ Flight::route('/databases', function() {
     }
 });
 
-Flight::route('/nodes', function() {
+Flight::route('/nodes', function () {
     Flight::view()->set('title', 'Explore nodes in orwell network - ' . Config::$title);
 
     try {
 
         $client = Flight::get('rpc');
-        $info = cache("nodes", function() use($client) {
+        $info = cache("nodes", function () use ($client) {
             return $client->execute('peerinfo');
         }, 60);
 
@@ -389,12 +441,12 @@ Flight::route('/nodes', function() {
     }
 });
 
-Flight::route('/mempool', function() {
+Flight::route('/mempool', function () {
     Flight::view()->set('title', 'Explore mempool in orwell network - ' . Config::$title);
 
     try {
         $client = Flight::get('rpc');
-        $info = cache("mempoolinfo", function() use($client) {
+        $info = cache("mempoolinfo", function () use ($client) {
             return $client->execute('mempoolinfo');
         }, 30);
 
@@ -411,13 +463,13 @@ Flight::route('/mempool', function() {
     }
 });
 
-Flight::map('renderTemplate', function($template, $data) {
+Flight::map('renderTemplate', function ($template, $data) {
     Flight::render($template, $data, 'content');
     Flight::render('layout', $data);
 });
 
 Flight::set('rpc', new Client('http://' . Config::$nodeRpcHost . ':' . Config::$nodeRpcPort));
-Flight::map('top', function($forse = false) {
+Flight::map('top', function ($forse = false) {
 
     if ($forse) {
         memfree('besttophash');
@@ -425,7 +477,7 @@ Flight::map('top', function($forse = false) {
     }
 
     if (!Flight::has('tophash')) {
-        $top = cache("besttophash", function() {
+        $top = cache("besttophash", function () {
             return Flight::get('rpc')->execute('bestblockhash');
         }, 5 * 60);
         Flight::set("tophash", $top);
@@ -435,7 +487,8 @@ Flight::map('top', function($forse = false) {
 });
 Flight::start();
 
-function pd($var) {
+function pd($var)
+{
     ob_start();
     var_dump($var);
     $v = ob_get_clean();
@@ -445,14 +498,16 @@ function pd($var) {
     return $v;
 }
 
-function d() {
+function d()
+{
     $arr = func_get_args();
     foreach ($arr as $var) {
         echo pd($var);
     }
 }
 
-function dd() {
+function dd()
+{
     $arr = func_get_args();
     call_user_func_array("d", $arr);
     die;

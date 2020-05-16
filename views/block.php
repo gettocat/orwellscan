@@ -33,7 +33,8 @@
         </tr>
         <tr>
             <td>Block time</td>
-            <td><?php echo time_since(time() - $block['time']) ?> ago / <?php echo date("d.m.Y H:i", $block['time']) ?></td>
+            <td><?php echo time_since(time() - $block['time']) ?> ago
+                / <?php echo date("d.m.Y H:i", $block['time']) ?></td>
         </tr>
         <tr>
             <td>Bits</td>
@@ -75,22 +76,73 @@
         </tr>
         <tr>
             <td>Block author</td>
-            <td><a href="/address/<?php echo $coinbase['in'][0]['writerAddress'] ?>"><?php echo $coinbase['in'][0]['writerAddress'] ?></a></td>
+            <td>
+                <a href="/address/<?php echo $coinbase['k'] ?>"><?php echo $coinbase['k'] ?></a>
+            </td>
         </tr>
         <tr>
             <td>Amount</td>
             <?php
             $coinbaseamount = 0;
-            foreach ($coinbase['out'] as $o){
-                $coinbaseamount+=$o['amount']/1e8;
+            foreach ($coinbase['out'] as $o) {
+                $coinbaseamount += $o['amount'] / 1e8;
             }
             ?>
-            <td><?php echo sprintf("%.9f", $coinbaseamount) ?> (<?php echo $block['reward'] ?> + <?php echo sprintf("%.9f", $coinbaseamount - $block['reward']) ?>)</td>
+            <td><?php echo sprintf("%.9f", $block['reward']) ?> (<?php echo $coinbaseamount ?>
+                + <?php echo sprintf("%.9f", $block['reward'] - $coinbaseamount) ?>)
+            </td>
         </tr>
         <tr>
             <td>Mined By</td>
-            <td><a href="/address/<?php echo $coinbase['out'][0]['address'] ?>"><?php echo $coinbase['out'][0]['address'] ?></a></td>
+            <td>
+                <a href="/address/<?php echo $coinbase['out'][$block['nonce']]['address'] ?>"><?php echo $coinbase['out'][$block['nonce']]['address'] ?></a>
+            </td>
         </tr>
+
+        <?php if ($coinbase['coinbaseData']['authorName']): ?>
+            <tr>
+                <td>Coinbase author</td>
+                <td><?php echo $coinbase['coinbaseData']['authorName'] ?></td>
+            </tr>
+        <?php endif ?>
+
+        <?php if ($coinbase['coinbaseData']['hardwareName']): ?>
+            <tr>
+                <td>Coinbase hardware/software</td>
+                <td><?php echo $coinbase['coinbaseData']['hardwareName'] ?></td>
+            </tr>
+        <?php endif ?>
+
+        <?php if ($coinbase['coinbaseData']['time']): ?>
+            <tr>
+                <td>Coinbase date</td>
+                <td><?php echo time_since(time() - $coinbase['coinbaseData']['time']) ?> ago
+                    / <?php echo date("d.m.Y H:i", $coinbase['coinbaseData']['time']) ?></td>
+            </tr>
+        <?php endif ?>
+
+        <?php if (count($coinbase['coinbaseData']['bytes'])): ?>
+            <tr>
+                <td>Coinbase signal flags</td>
+                <td>
+                    <?php if (count($coinbase['coinbaseData']['bytes'])): ?>
+                        <table class="table table-bordered">
+                            <tr>
+                                <?php foreach ($coinbase['coinbaseData']['bytes'] as $k => $v): ?>
+                                    <td><?php echo $k + 1 ?></td>
+                                <?php endforeach ?>
+                            </tr>
+                            <tr>
+                                <?php foreach ($coinbase['coinbaseData']['bytes'] as $v): ?>
+                                    <td><?php echo $v ?></td>
+                                <?php endforeach ?>
+                            </tr>
+                        </table>
+                    <?php endif ?>
+                </td>
+            </tr>
+        <?php endif ?>
+
     </table>
 
     <h3>Tx list</h3>
@@ -124,7 +176,7 @@
 
                         <div class="col text-center">
 
-                            <?php if ($tx['coinbase']): ?>
+                            <?php if ($tx['cb']): ?>
                                 <a href='#coinbase'>coinbase</a>
                             <?php else: ?>
                                 <?php foreach ($tx['in'] as $in): ?>
@@ -133,7 +185,8 @@
                                             <a href='/address/<?php echo $in['writerAddress'] ?>'><?php echo $in['writerAddress'] ?></a>
                                         </div>
                                         <div class='col-sm-4'>
-                                            <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>... out <<?php echo $in['index'] ?>></a>
+                                            <a href='/tx/<?php echo $in['hash'] ?>?out=<?php echo $in['index'] ?>'><?php echo truncate($in['hash']) ?>
+                                                ... out <<?php echo $in['index'] ?>></a>
                                         </div>
                                     </div>
                                 <?php endforeach ?>
